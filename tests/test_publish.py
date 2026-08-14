@@ -43,7 +43,10 @@ class PublishTests(unittest.TestCase):
             manifest = build_fixture(source)
             plan = plan_publish(source, destination, manifest)
             self.assertFalse(destination.exists())
-            self.assertTrue(str(plan.target).endswith("Portfolio/asset/Chair/v001"))
+            self.assertEqual(
+                plan.target.parts[-4:],
+                ("Portfolio", "asset", "Chair", "v001"),
+            )
 
     def test_bundle_is_published_with_verified_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
