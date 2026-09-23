@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from pathlib import Path
+import importlib
 import tempfile
 import unittest
+from unittest import mock
 
 from kairo_pipeline import (
     PublishFile,
@@ -85,6 +87,56 @@ class CertificationTests(unittest.TestCase):
                 (second.target / "publish.kairo.json").read_bytes(),
                 first_manifest_bytes,
             )
+
+
+
+    def test_failed_final_replace_restores_previous_publish(self) -> None:
+        publish_module = importlib.import_module("kairo_pipeline.publish")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            destination = root / "library"
+            payload = source / "geometry" / "demo.bin"
+            payload.parent.mkdir(parents=True)
+            payload.write_bytes(b"stable-version")
+
+            first_manifest = self._manifest(source)
+            first = publish_bundle(source, destination, first_manifest)
+            target_payload = first.target / "geometry" / "demo.bin"
+            self.assertEqual(target_payload.read_bytes(), b"stable-version")
+
+            payload.write_bytes(b"candidate-version")
+            replacement_manifest = self._manifest(source)
+
+            real_replace = publish_module.os.replace
+            calls = 0
+
+            def fail_second_replace(source_path: object, destination_path: object) -> None:
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise OSError("injected final publish rename failure")
+                real_replace(source_path, destination_path)
+
+            with mock.patch.object(
+                publish_module.os,
+                "replace",
+                side_effect=fail_second_replace,
+            ):
+                with self.assertRaisesRegex(
+                    OSError,
+                    "injected final publish rename failure",
+                ):
+                    publish_bundle(
+                        source,
+                        destination,
+                        replacement_manifest,
+                        replace=True,
+                    )
+
+            self.assertGreaterEqual(calls, 3, "rollback must restore the backup")
+            self.assertTrue(first.target.is_dir())
+            self.assertEqual(target_payload.read_bytes(), b"stable-version")
 
 
 if __name__ == "__main__":
