@@ -1,22 +1,19 @@
-# KairoPipelineCore Status
+# KairoPipelineCore v1 Status
 
-Wave: A — production-contract certification  
-Frozen v1 target: 95/100  
-Source gate: complete  
-Execution gate: `python3 -m unittest discover -s tests -v`
+**Target: 95%. Current completion claim: UNVERIFIED.**
 
-## Frozen v1 scope
+The earlier percentage claim has been retracted. A frozen scope or a populated
+`STATUS.yaml` is not evidence that this repository builds, runs, or satisfies
+its integration contract.
 
-PipelineCore v1 owns portable paths, fingerprints, strict versioned publish manifests, deterministic diagnostics, sequence inspection, dry-run planning and rollback-safe atomic publication. DCC-specific scene interpretation belongs to Blender/Maya/Houdini/Nuke.
+Current rules:
 
-## 95 exit evidence
+- `target_score: 95` is a target only.
+- `completion_score: unverified` remains until exact-head acceptance executes.
+- source/test failures block completion regardless of documentation state.
+- platform-gated behavior is not inferred from another host.
+- post-v1 exclusions may bound scope, but they cannot hide missing v1 behavior.
 
-- Manifest input is bounded, strict and deterministic.
-- Publish inputs and staged outputs are fingerprint verified.
-- Existing versions are immutable unless replacement is explicit.
-- New certification tests prove planning is non-mutating, tampered replacement leaves the previous target intact, and a new validated replacement becomes visible atomically.
-- Standard-library-only runtime keeps the contract portable across DCC-bundled Python installations.
-
-## Verification policy
-
-A 95 release requires the complete Python unit suite at the exact SHA. Host-native DCC behavior is deliberately verified in the host repositories rather than inferred here.
+Use the repository's real build/test gate and the KairoGameEngine portfolio
+acceptance runner. Do not cite this repository as 95% complete until the
+accepted exact-head evidence matches the current revision.
