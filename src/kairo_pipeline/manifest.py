@@ -94,6 +94,11 @@ class PublishManifest:
             raise TypeError("publish kind must be PublishKind")
         _validate_identifier("project", self.project)
         _validate_identifier("name", self.name)
+        # These identifiers become real directory components on disk. Their
+        # spelling must satisfy the stricter cross-platform path contract,
+        # including Windows reserved DOS device names (CON, AUX, COM1...).
+        normalize_project_path(self.project)
+        normalize_project_path(self.name)
         _validate_identifier("source host", self.source_host)
         if not isinstance(self.version, int) or isinstance(self.version, bool):
             raise TypeError("publish version must be an integer")
