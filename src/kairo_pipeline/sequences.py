@@ -24,7 +24,7 @@ class FramePattern:
     def __post_init__(self) -> None:
         if not isinstance(self.prefix, str) or not isinstance(self.suffix, str):
             raise TypeError("frame pattern prefix and suffix must be strings")
-        if not isinstance(self.padding, int) or not 1 <= self.padding <= 12:
+        if not isinstance(self.padding, int) or isinstance(self.padding, bool) or not 1 <= self.padding <= 12:
             raise ValueError("frame padding must be between 1 and 12")
         normalize_project_path(f"{self.prefix}{'#' * self.padding}{self.suffix}")
 
@@ -110,7 +110,11 @@ def scan_sequence(
     discovered: set[int] = set()
     if directory_path.is_dir():
         for child in directory_path.iterdir():
-            if not child.is_file():
+            # A symlink to an external frame is not an owned local sequence
+            # frame. A normal is_file() follows links and incorrectly records
+            # those external targets as present, even when the pattern's
+            # parent directory itself is safely contained in the project.
+            if child.is_symlink() or not child.is_file():
                 continue
             match = matcher.fullmatch(child.name)
             if match:

@@ -19,6 +19,10 @@ class FramePatternTests(unittest.TestCase):
         pattern = FramePattern.parse("cache/sim.###.bgeo.sc")
         self.assertEqual(pattern.path_for_frame(-2), "cache/sim.-002.bgeo.sc")
 
+    def test_boolean_padding_is_not_accepted_as_integer(self) -> None:
+        with self.assertRaises(ValueError):
+            FramePattern("renders/beauty.", ".exr", True)
+
     def test_missing_or_ambiguous_tokens_are_rejected(self) -> None:
         for value in (
             "renders/beauty.exr",
@@ -59,6 +63,25 @@ class SequenceScanTests(unittest.TestCase):
                 2,
             )
             self.assertEqual(result.missing, (1, 2))
+
+    def test_external_symlink_cannot_masquerade_as_an_owned_frame(self) -> None:
+        with tempfile.TemporaryDirectory() as project, tempfile.TemporaryDirectory() as external:
+            root = Path(project)
+            frames = root / "renders"
+            frames.mkdir()
+            external_frame = Path(external) / "remote.exr"
+            external_frame.write_bytes(b"external content")
+            try:
+                (frames / "beauty.0001.exr").symlink_to(external_frame)
+            except (OSError, NotImplementedError):
+                self.skipTest("filesystem does not support symbolic links")
+
+            result = scan_sequence(
+                root, FramePattern.parse("renders/beauty.####.exr"), 1, 1
+            )
+            self.assertEqual(result.existing, ())
+            self.assertEqual(result.missing, (1,))
+            self.assertFalse(result.complete)
 
     def test_reverse_range_is_rejected(self) -> None:
         with self.assertRaises(ValueError):

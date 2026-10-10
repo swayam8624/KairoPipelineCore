@@ -35,6 +35,25 @@ class PathTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 normalize_project_path(value)
 
+    def test_reserved_windows_names_and_invalid_characters_are_rejected(self) -> None:
+        # DOS device aliases are reserved on Windows even with an extension;
+        # invalid punctuation can be legal on POSIX but breaks Windows.
+        invalid = (
+            "CON", "assets/con.txt", "foo/AUX.dat", "NUL.png",
+            "some/prn", "assets/COM1.exr", "assets/lpt9", "COM¹.log",
+            "textures/a?b.png", "shots/b*auty.exr", "assets/wood|oak",
+            'assets/name"withquote', "assets/angle<1>", "assets/abc" + chr(127),
+        )
+        for value in invalid:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                normalize_project_path(value)
+
+    def test_similarly_named_portable_files_remain_valid(self) -> None:
+        for value in ("assets/COM10.exr", "assets/conifer.png", "assets/auxiliary",
+                      "assets/concrete.001.exr"):
+            with self.subTest(value=value):
+                self.assertEqual(normalize_project_path(value), value)
+
     def test_resolve_stays_inside_project_root(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
