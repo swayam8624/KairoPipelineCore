@@ -88,6 +88,21 @@ class ManifestTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "duplicate JSON key: media_type"):
             parse_manifest(nested_duplicate)
 
+    def test_project_and_asset_directory_names_are_portable(self) -> None:
+        # Identifier regex alone permitted DOS device names such as CON. A
+        # valid manifest could publish on Linux and fail when reopened on
+        # Windows because project/name become real directory components.
+        from dataclasses import replace
+
+        for name in ("CON", "aux", "NUL.txt", "PRN", "COM1", "LPT9"):
+            with self.subTest(name=name):
+                with self.assertRaises(ValueError):
+                    replace(make_manifest(), project=name)
+                with self.assertRaises(ValueError):
+                    replace(make_manifest(), name=name)
+        self.assertEqual(replace(make_manifest(), project="Conifer").project, "Conifer")
+        self.assertEqual(replace(make_manifest(), name="COM10").name, "COM10")
+
     def test_case_insensitive_file_collision_is_rejected(self) -> None:
         with self.assertRaisesRegex(ValueError, "collides"):
             PublishManifest(
