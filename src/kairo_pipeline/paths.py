@@ -8,6 +8,14 @@ import re
 
 _WINDOWS_DRIVE = re.compile(r"^[A-Za-z]:")
 _MAX_PATH_LENGTH = 1024
+# Windows treats these basenames as DOS devices, even with extensions and in
+# nested directories. A publish that works on POSIX must remain representable
+# on Windows without aliasing a device or failing during materialization.
+_WINDOWS_DEVICE = re.compile(
+    r"^(?:CON|PRN|AUX|NUL|COM[1-9¹²³]|LPT[1-9¹²³])$",
+    re.IGNORECASE,
+)
+_WINDOWS_FORBIDDEN = frozenset('<>"|?*')
 
 
 def normalize_project_path(value: str) -> str:
@@ -33,7 +41,7 @@ def normalize_project_path(value: str) -> str:
         raise ValueError("project path must use forward slashes")
     if value.startswith("/") or _WINDOWS_DRIVE.match(value):
         raise ValueError("project path must be relative")
-    if any(ord(character) < 32 for character in value):
+    if any(ord(character) < 32 or ord(character) == 127 for character in value):
         raise ValueError("project path must not contain control characters")
 
     source_parts = value.split("/")
@@ -46,8 +54,14 @@ def normalize_project_path(value: str) -> str:
     for part in parts:
         if part[-1:] in (".", " "):
             raise ValueError("project path components must not end in dot or space")
-        if ":" in part:
-            raise ValueError("project path components must not contain colons")
+        if ":" in part or any(character in _WINDOWS_FORBIDDEN for character in part):
+            raise ValueError("project path contains Windows-invalid filename characters")
+        # Windows recognizes device names before an extension and also ignores
+        # trailing ASCII spaces in that basename. Test each component, not only
+        # the final filename, to prevent invalid intermediate directories.
+        basename = part.split(".", 1)[0].rstrip(" ")
+        if _WINDOWS_DEVICE.fullmatch(basename):
+            raise ValueError("project path contains a reserved Windows device name")
 
     return PurePosixPath(*parts).as_posix()
 
