@@ -60,6 +60,34 @@ class ManifestTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unknown fields"):
             parse_manifest(json.dumps(value).encode())
 
+    def test_duplicate_root_and_nested_keys_are_rejected(self) -> None:
+        payload = serialize_manifest(make_manifest())
+
+        # A silently overwritten version or hash can undermine provenance if
+        # different tools interpret duplicate JSON object keys differently.
+        root_duplicate = payload.replace(
+            b'"version":2', b'"version":2,"version":3'
+        )
+        self.assertNotEqual(root_duplicate, payload)
+        with self.assertRaisesRegex(ValueError, "duplicate JSON key: version"):
+            parse_manifest(root_duplicate)
+
+        metadata_duplicate = payload.replace(
+            b'"artist":"Test Artist"',
+            b'"artist":"Test Artist","artist":"Different Artist"',
+        )
+        self.assertNotEqual(metadata_duplicate, payload)
+        with self.assertRaisesRegex(ValueError, "duplicate JSON key: artist"):
+            parse_manifest(metadata_duplicate)
+
+        nested_duplicate = payload.replace(
+            b'"media_type":"model/gltf+json"',
+            b'"media_type":"model/gltf+json","media_type":"invalid"',
+        )
+        self.assertNotEqual(nested_duplicate, payload)
+        with self.assertRaisesRegex(ValueError, "duplicate JSON key: media_type"):
+            parse_manifest(nested_duplicate)
+
     def test_case_insensitive_file_collision_is_rejected(self) -> None:
         with self.assertRaisesRegex(ValueError, "collides"):
             PublishManifest(
