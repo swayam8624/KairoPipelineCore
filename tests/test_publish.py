@@ -80,6 +80,58 @@ class PublishTests(unittest.TestCase):
                 publish_bundle(source, destination, manifest)
             self.assertFalse(destination.exists())
 
+    def test_linked_payload_and_parent_are_rejected(self) -> None:
+        # Fingerprinting canonical paths used to mask in-project links. A DCC
+        # must not publish through a symbolic-link file or ancestor directory.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            source.mkdir()
+            destination = root / "library"
+            manifest = build_fixture(source)
+            real_file = source / "geometry/chair.gltf"
+            alias = source / "geometry/alias.gltf"
+            try:
+                alias.symlink_to(real_file)
+            except (OSError, NotImplementedError):
+                self.skipTest("symlinks are unavailable on this host")
+
+            linked_manifest = PublishManifest(
+                kind=manifest.kind,
+                project=manifest.project,
+                name=manifest.name,
+                version=manifest.version,
+                source_host=manifest.source_host,
+                source_path=manifest.source_path,
+                source_fingerprint=manifest.source_fingerprint,
+                outputs=(PublishFile(
+                    "geometry/alias.gltf", "scene",
+                    fingerprint_bytes(b"gltf"), "model/gltf+json"
+                ),),
+            )
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                plan_publish(source, destination, linked_manifest)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                publish_bundle(source, destination, linked_manifest)
+
+            (source / "linked_geometry").symlink_to(source / "geometry", target_is_directory=True)
+            directory_manifest = PublishManifest(
+                kind=manifest.kind,
+                project=manifest.project,
+                name=manifest.name,
+                version=manifest.version,
+                source_host=manifest.source_host,
+                source_path=manifest.source_path,
+                source_fingerprint=manifest.source_fingerprint,
+                outputs=(PublishFile(
+                    "linked_geometry/chair.gltf", "scene",
+                    fingerprint_bytes(b"gltf"), "model/gltf+json"
+                ),),
+            )
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                plan_publish(source, destination, directory_manifest)
+            self.assertFalse(destination.exists())
+
     def test_existing_version_requires_explicit_replace(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

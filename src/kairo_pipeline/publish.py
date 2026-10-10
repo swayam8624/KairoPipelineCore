@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import shutil
 import tempfile
 from typing import Iterable
@@ -63,9 +63,7 @@ def plan_publish(
 
     files = tuple(sorted((*manifest.outputs, *manifest.dependencies)))
     for item in files:
-        source_file = resolve_project_path(source, item.path)
-        if source_file.is_symlink():
-            raise ValueError(f"publish input must not be a symbolic link: {item.path}")
+        source_file = _require_unlinked_source_file(source, item.path)
         actual = fingerprint_file(source_file)
         if actual != item.fingerprint:
             raise ValueError(
@@ -109,7 +107,8 @@ def publish_bundle(
     copied_bytes = 0
     try:
         for item in plan.files:
-            source_file = resolve_project_path(source, item.path)
+            # Revalidate prior to copying: staging must not follow authored links.
+            source_file = _require_unlinked_source_file(source, item.path)
             staged_file = resolve_project_path(staging, item.path)
             staged_file.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source_file, staged_file, follow_symlinks=False)
@@ -161,6 +160,25 @@ def publish_bundle(
             shutil.rmtree(backup)
         _remove_empty_parents(created_parents)
         raise
+
+
+
+def _require_unlinked_source_file(source_root: Path, portable_path: str) -> Path:
+    """Reject symbolic links in every authored source-path component.
+
+    resolve_project_path() deliberately canonicalizes filesystem links for
+    containment. Testing is_symlink() on that resolved result can never detect
+    an in-project alias. Check the original components *before* canonicalizing
+    so a linked file or directory is never accepted as a publish payload.
+    This check is repeated immediately before staging, although the source
+    tree must still be treated as immutable while publishing.
+    """
+    cursor = source_root
+    for part in PurePosixPath(portable_path).parts:
+        cursor = cursor / part
+        if cursor.is_symlink():
+            raise ValueError(f"publish input must not be a symbolic link: {portable_path}")
+    return resolve_project_path(source_root, portable_path)
 
 
 def _create_target_parents(destination: Path, parent: Path) -> tuple[Path, ...]:
