@@ -212,6 +212,7 @@ def parse_manifest(payload: bytes) -> PublishManifest:
     try:
         value = json.loads(
             text,
+            object_pairs_hook=_reject_duplicate_json_keys,
             parse_constant=lambda constant: (_raise_non_finite(constant)),
         )
     except json.JSONDecodeError as error:
@@ -321,6 +322,21 @@ def _require_string_mapping(value: Mapping[str, Any], key: str) -> Mapping[str, 
         raise TypeError(f"manifest field {key} must be an object")
     if not all(isinstance(item_key, str) and isinstance(item, str) for item_key, item in result.items()):
         raise TypeError(f"manifest field {key} must map strings to strings")
+    return result
+
+
+def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    """Reject duplicates at every object level, not just top-level fields.
+
+    Python json.loads normally keeps the final duplicate value. This would
+    allow two manifest consumers to disagree about paths, versions, or hashes
+    if they use different JSON parsers.
+    """
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"manifest contains duplicate JSON key: {key}")
+        result[key] = value
     return result
 
 
