@@ -42,7 +42,7 @@ class PathTests(unittest.TestCase):
             "CON", "assets/con.txt", "foo/AUX.dat", "NUL.png",
             "some/prn", "assets/COM1.exr", "assets/lpt9", "COM¹.log",
             "textures/a?b.png", "shots/b*auty.exr", "assets/wood|oak",
-            'assets/name"withquote', "assets/angle<1>", "assets/abc\\x7f",
+            'assets/name"withquote', "assets/angle<1>", "assets/abc" + chr(127),
         )
         for value in invalid:
             with self.subTest(value=value), self.assertRaises(ValueError):
