@@ -1,3 +1,8 @@
+# TEACHING MAP — src/kairo_pipeline/sequences.py
+# Parses and checks sequence-based production assets (e.g., simulation/shot frame ranges).
+# Houdini cacheguard and media tools can consume the results without altering source assets.
+# See READING_ORDER.md for cross-DCC callers and test expectations.
+
 """Frame-sequence patterns and deterministic filesystem inspection."""
 
 from __future__ import annotations
