@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Immutable diagnostic severity, code, message and host-navigation identity. DCC hosts supply their
+# own scene object references; this package validates text but does not inspect a host scene.
+# Read docs/SOURCE_READING_ORDER.md for cross-DCC import and publish flow.
+
 """Structured diagnostics shared by interactive DCC tools and headless CI."""
 
 from __future__ import annotations
