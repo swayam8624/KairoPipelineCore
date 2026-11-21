@@ -1,3 +1,9 @@
+# SOURCE STUDY NOTE:
+# Portable, cross-platform project path validation used by manifests, sequence scanning and
+# publishing. Rejects traversal, ambiguous Windows device names and unsafe separators before file
+# resolution.
+# Read docs/SOURCE_READING_ORDER.md for cross-DCC import and publish flow.
+
 """Portable project-path validation and containment helpers."""
 
 from __future__ import annotations
