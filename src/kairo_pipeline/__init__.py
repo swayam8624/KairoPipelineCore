@@ -1,3 +1,9 @@
+# TEACHING MAP — src/kairo_pipeline/__init__.py
+# Package boundary exposing portable production-pipeline types; Blender, Maya, Houdini, Nuke
+# and KairoAssets consume the same publish/manifest conventions instead of sharing one
+# host's native data structures.
+# See READING_ORDER.md for cross-DCC callers and test expectations.
+
 """Shared production-pipeline contracts for Kairo DCC integrations."""
 
 from .diagnostics import Diagnostic, DiagnosticBag, DiagnosticLocation, Severity
