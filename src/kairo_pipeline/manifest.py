@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Strict versioned publish manifest parser/serializer. Reuses paths.py canonicalization and
+# Fingerprint; downstream publish.py validates every declared file before staging.
+# Read docs/SOURCE_READING_ORDER.md for cross-DCC import and publish flow.
+
 """Versioned, strict, and deterministic cross-DCC publish manifests."""
 
 from __future__ import annotations
