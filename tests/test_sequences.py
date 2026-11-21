@@ -1,3 +1,8 @@
+# TEACHING MAP — tests/test_sequences.py
+# Exercises frame-range discovery, missing intervals and stale sequences consumed by
+# Houdini/Nuke tooling.
+# See READING_ORDER.md for the full plan -> stage -> verify workflow.
+
 from __future__ import annotations
 
 from pathlib import Path
