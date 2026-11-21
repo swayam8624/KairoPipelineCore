@@ -1,3 +1,9 @@
+# TEACHING MAP — src/kairo_pipeline/manifest.py
+# Defines versioned portable publication manifest and deterministic serialization. Publisher
+# uses these entries to stage outputs, while downstream KairoAssets revalidates the same
+# contract.
+# See READING_ORDER.md for cross-DCC callers and test expectations.
+
 """Versioned, strict, and deterministic cross-DCC publish manifests."""
 
 from __future__ import annotations

@@ -1,3 +1,7 @@
+# TEACHING MAP — tests/test_package.py
+# Verifies installation/package layout and portable import surfaces for use by DCC bridges.
+# See READING_ORDER.md for the full plan -> stage -> verify workflow.
+
 from __future__ import annotations
 
 import unittest

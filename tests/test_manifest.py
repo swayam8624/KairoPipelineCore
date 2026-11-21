@@ -1,3 +1,8 @@
+# TEACHING MAP — tests/test_manifest.py
+# Validates the portable manifest schema, stable serialization and invalid entries. DCC
+# adapters and KairoAssets rely on the same source contract.
+# See READING_ORDER.md for the full plan -> stage -> verify workflow.
+
 from __future__ import annotations
 
 import unittest

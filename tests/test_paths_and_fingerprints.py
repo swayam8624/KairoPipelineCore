@@ -1,3 +1,8 @@
+# TEACHING MAP — tests/test_paths_and_fingerprints.py
+# Checks safe path normalization and byte-exact hash reproducibility; these are
+# prerequisites for trusted manifest parsing and publication.
+# See READING_ORDER.md for the full plan -> stage -> verify workflow.
+
 from __future__ import annotations
 
 from pathlib import Path

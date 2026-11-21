@@ -1,3 +1,8 @@
+# TEACHING MAP — tests/test_diagnostics.py
+# Checks typed diagnostic categories and severity used by host UI adapters; the diagnostic
+# engine should not modify underlying assets.
+# See READING_ORDER.md for the full plan -> stage -> verify workflow.
+
 from __future__ import annotations
 
 import unittest

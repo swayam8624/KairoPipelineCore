@@ -1,3 +1,8 @@
+# TEACHING MAP — tests/test_certification.py
+# Checks evidence/provenance certification rules; generated manifest or passing unit tests
+# alone do not validate a native artist application.
+# See READING_ORDER.md for the full plan -> stage -> verify workflow.
+
 """Certification tests for deterministic, rollback-safe publication."""
 
 from __future__ import annotations

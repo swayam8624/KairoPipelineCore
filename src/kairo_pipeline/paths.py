@@ -1,3 +1,9 @@
+# TEACHING MAP — src/kairo_pipeline/paths.py
+# Validates project-relative paths and safe filesystem containment before a publish plan may
+# touch files. Manifest and publisher call these path rules to reject traversal and
+# ambiguous inputs.
+# See READING_ORDER.md for cross-DCC callers and test expectations.
+
 """Portable project-path validation and containment helpers."""
 
 from __future__ import annotations

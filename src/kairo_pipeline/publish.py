@@ -1,3 +1,9 @@
+# TEACHING MAP — src/kairo_pipeline/publish.py
+# Two-phase publication: plan_publish validates paths, manifest, hashes and replacement
+# policy without mutation; final publishing stages files and commits an atomic rename. DCC
+# publishers invoke this portable API.
+# See READING_ORDER.md for cross-DCC callers and test expectations.
+
 """Validated atomic publication of immutable production bundles."""
 
 from __future__ import annotations
