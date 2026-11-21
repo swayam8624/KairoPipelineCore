@@ -1,3 +1,8 @@
+# TEACHING MAP — tests/test_publish.py
+# Verifies staged publish, atomic replacement, collision refusal and rollback behavior
+# against the plan_publish contract. Failed publication must preserve last valid artifacts.
+# See READING_ORDER.md for the full plan -> stage -> verify workflow.
+
 from __future__ import annotations
 
 from pathlib import Path
