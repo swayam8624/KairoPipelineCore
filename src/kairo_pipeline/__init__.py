@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Public Python package surface for portable pipeline contracts. DCC host adapters should import the
+# shared helpers rather than copy path, manifest or publisher validation.
+# Read docs/SOURCE_READING_ORDER.md for cross-DCC import and publish flow.
+
 """Shared production-pipeline contracts for Kairo DCC integrations."""
 
 from .diagnostics import Diagnostic, DiagnosticBag, DiagnosticLocation, Severity
