@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Frame-sequence pattern parsing and presence checks for render/cache outputs. Hosts such as Houdini
+# and Nuke use this without importing their own DCC APIs.
+# See docs/SOURCE_READING_ORDER.md for caller and consumer context.
+
 """Frame-sequence patterns and deterministic filesystem inspection."""
 
 from __future__ import annotations

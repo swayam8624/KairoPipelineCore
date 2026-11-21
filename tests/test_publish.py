@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Atomic publishing and failure-path tests; check dry-run does not mutate state and replacement
+# preserves rollback semantics.
+# See docs/SOURCE_READING_ORDER.md for caller and consumer context.
+
 from __future__ import annotations
 
 from pathlib import Path

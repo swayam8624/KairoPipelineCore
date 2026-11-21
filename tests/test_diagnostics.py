@@ -1,3 +1,7 @@
+# SOURCE STUDY NOTE:
+# Deterministic structured diagnostics and host-navigation token tests.
+# See docs/SOURCE_READING_ORDER.md for caller and consumer context.
+
 from __future__ import annotations
 
 import unittest

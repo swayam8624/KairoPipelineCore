@@ -1,3 +1,9 @@
+# SOURCE STUDY NOTE:
+# Streaming SHA-256 content fingerprints for manifest and publication integrity. manifest.py
+# describes expected identity; publish.py re-hashes actual files instead of relying on filenames or
+# mtimes.
+# Read docs/SOURCE_READING_ORDER.md for cross-DCC import and publish flow.
+
 """Deterministic content fingerprints for source and dependency tracking."""
 
 from __future__ import annotations

@@ -1,5 +1,7 @@
 # KairoPipelineCore
 
+> **Source-study guide:** The [source reading guide](docs/SOURCE_READING_ORDER.md) links portable paths, manifests, fingerprints, diagnostics, frame sequences, publication and tests, explaining how the shared API connects Blender, Maya, Houdini and Nuke without importing host SDKs. The existing [LICENSE](LICENSE) remains unchanged.
+
 `KairoPipelineCore` provides the host-neutral contracts shared by Kairo's
 Blender, Maya, Houdini, and Nuke production tools. It deliberately depends only
 on the Python standard library so it can be packaged into DCC applications

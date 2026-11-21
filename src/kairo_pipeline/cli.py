@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Argparse command gateway that routes validate-manifest, scan-sequence and publish requests into
+# pure manifest/sequences/publish modules. Structured errors are surfaced for headless automation.
+# Read docs/SOURCE_READING_ORDER.md for cross-DCC import and publish flow.
+
 """Command-line entry point for host-neutral pipeline operations."""
 
 from __future__ import annotations

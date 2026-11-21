@@ -1,3 +1,7 @@
+# SOURCE STUDY NOTE:
+# Public package import and entry-point contract tests, separate from DCC-native integration.
+# See docs/SOURCE_READING_ORDER.md for caller and consumer context.
+
 from __future__ import annotations
 
 import unittest

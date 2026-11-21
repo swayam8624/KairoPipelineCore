@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Path traversal/platform alias and SHA-256 correctness cases. Verify bad inputs are rejected before
+# a DCC can publish untrusted data.
+# See docs/SOURCE_READING_ORDER.md for caller and consumer context.
+
 from __future__ import annotations
 
 from pathlib import Path
