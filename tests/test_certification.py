@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Cross-module certification tests for portable pipeline guarantees, not a substitute for native
+# Maya/Houdini/Blender/Nuke execution.
+# See docs/SOURCE_READING_ORDER.md for caller and consumer context.
+
 """Certification tests for deterministic, rollback-safe publication."""
 
 from __future__ import annotations
