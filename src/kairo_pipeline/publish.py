@@ -1,3 +1,9 @@
+# SOURCE STUDY NOTE:
+# Two-phase publishing: plan_publish checks files/hashes without changing destination, then
+# publish_bundle stages/rechecks/carries out final atomic rename with replacement/rollback
+# safeguards.
+# Read docs/SOURCE_READING_ORDER.md for cross-DCC import and publish flow.
+
 """Validated atomic publication of immutable production bundles."""
 
 from __future__ import annotations
