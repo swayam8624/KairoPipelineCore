@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Manifest validation regression tests: authoritative for version, field, and path constraints used
+# by the publisher.
+# See docs/SOURCE_READING_ORDER.md for caller and consumer context.
+
 from __future__ import annotations
 
 import unittest
