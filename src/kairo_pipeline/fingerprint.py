@@ -1,3 +1,8 @@
+# TEACHING MAP — src/kairo_pipeline/fingerprint.py
+# Computes byte-exact source/output fingerprints for provenance. Manifest records hashes and
+# publish verifies them; editor or DCC scene labels alone are not proof of unchanged bytes.
+# See READING_ORDER.md for cross-DCC callers and test expectations.
+
 """Deterministic content fingerprints for source and dependency tracking."""
 
 from __future__ import annotations
