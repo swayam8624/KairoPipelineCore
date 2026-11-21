@@ -1,3 +1,9 @@
+# TEACHING MAP — src/kairo_pipeline/cli.py
+# CLI adapter for validation, planning and publish actions. It converts arguments to the
+# pure manifest/path/fingerprint APIs; non-mutating dry runs must stay distinct from real
+# publication.
+# See READING_ORDER.md for the full plan -> stage -> verify workflow.
+
 """Command-line entry point for host-neutral pipeline operations."""
 
 from __future__ import annotations
