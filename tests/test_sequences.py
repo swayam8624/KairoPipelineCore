@@ -1,3 +1,7 @@
+# SOURCE STUDY NOTE:
+# Frame-pattern and sequence-completeness tests used to reason about partial render publishes.
+# See docs/SOURCE_READING_ORDER.md for caller and consumer context.
+
 from __future__ import annotations
 
 from pathlib import Path
