@@ -1,3 +1,4 @@
+# TEACHING MAP: Shared DCC publish manifest schema and validation consumed by Blender/Houdini/Maya/Nuke adapters and verified again by KairoAssets. Distinguish JSON/path validation from host-specific node or scene state.
 """Versioned, strict, and deterministic cross-DCC publish manifests."""
 
 from __future__ import annotations
