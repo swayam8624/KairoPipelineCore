@@ -1,3 +1,9 @@
+# TEACHING MAP — src/kairo_pipeline/diagnostics.py
+# Structured diagnostic messages for invalid asset/cache/publish preflight. Host-specific
+# DCC adapters render these diagnostics as UI without owning their semantic validation
+# rules.
+# See READING_ORDER.md for cross-DCC callers and test expectations.
+
 """Structured diagnostics shared by interactive DCC tools and headless CI."""
 
 from __future__ import annotations
