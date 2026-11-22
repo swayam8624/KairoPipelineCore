@@ -1,3 +1,11 @@
+# TEACHING MODULE: Cache/render frames are named with a constrained
+# pattern such as #### or %04d. A frame sequence is not merely a directory:
+# its expected range, actual frame identities, duplicates and missing frames
+# determine whether a Houdini cache or Nuke render may be published.
+#
+# FramePattern validates portable path and one bounded numeric token;
+# scan_sequence reports observed files while keeping deterministic frame
+# ordering for manifests, diagnostics and missing-frame policies.
 """Frame-sequence patterns and deterministic filesystem inspection."""
 
 from __future__ import annotations
@@ -50,6 +58,9 @@ class FramePattern:
     def canonical(self) -> str:
         return f"{self.prefix}{'#' * self.padding}{self.suffix}"
 
+    # Expand a numeric frame into a portable relative output path.
+    # Calling adapters must still check that the resulting file exists
+    # and matches its declared content fingerprint.
     def path_for_frame(self, frame: int) -> str:
         if not isinstance(frame, int) or isinstance(frame, bool):
             raise TypeError("frame number must be an integer")
@@ -84,7 +95,10 @@ class SequenceScan:
         return not self.missing
 
 
+# Inspect existing frame files using the validated pattern; do not
+# assume missing/duplicate frames are harmless to temporal simulation.
 def scan_sequence(
+
     project_root: Path,
     pattern: FramePattern,
     first: int,
