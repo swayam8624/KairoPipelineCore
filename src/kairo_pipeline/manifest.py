@@ -1,4 +1,16 @@
-# TEACHING MAP: Shared DCC publish manifest schema and validation consumed by Blender/Houdini/Maya/Nuke adapters and verified again by KairoAssets. Distinguish JSON/path validation from host-specific node or scene state.
+# TEACHING MODULE: Canonical cross-DCC publish contract. The same
+# PublishManifest/PublishFile schema is produced by Blender, Maya and Houdini
+# and consumed by Nuke or KairoAssets; every host must agree on identity,
+# paths, file roles, source fingerprints and version semantics.
+#
+# This parser rejects duplicate JSON object keys, nonfinite numbers,
+# unknown schema fields, path collisions after case folding, and oversized
+# manifests before accepting authored metadata. A valid manifest records
+# claims about files; actual filesystem bytes must be re-hashed by publish
+# and ingest. Neither a hash nor a schema validates licensing/ownership.
+#
+# Deterministic serialized output helps Git diffs and reproducible packages,
+# but is not itself cryptographic authentication of a trusted publisher.
 """Versioned, strict, and deterministic cross-DCC publish manifests."""
 
 from __future__ import annotations
@@ -187,6 +199,9 @@ class PublishManifest:
         )
 
 
+# Serialize one frozen, validated data model in a canonical byte order.
+# Hashes over these bytes identify *this exact manifest representation*;
+# a producer must never rely on Python dict insertion history instead.
 def serialize_manifest(manifest: PublishManifest) -> bytes:
     """Serialize one manifest to canonical UTF-8 JSON with a final newline."""
 
@@ -204,6 +219,8 @@ def serialize_manifest(manifest: PublishManifest) -> bytes:
     ).encode("utf-8")
 
 
+# Strict boundary for externally supplied JSON: size caps and duplicate-key
+# detection precede PublishManifest's typed semantic validation.
 def parse_manifest(payload: bytes) -> PublishManifest:
     """Parse bounded canonical or human-formatted manifest JSON strictly."""
 
