@@ -1,4 +1,5 @@
 # Teaching source map — KairoPipelineCore
+**Worked source walkthrough:** [Strict manifest, safe paths, hashes, staging and consumer verification](CROSS_DCC_PUBLICATION_WALKTHROUGH.md).
 
 Portable Python publication/manifest contract shared by DCC tool adapters.
 
