@@ -1,3 +1,12 @@
+# TEACHING MODULE: A source DCC can run on Windows, macOS or Linux while
+# the consumer uses another filesystem. Normalize *syntax* first (relative
+# POSIX path, no traversal/control/reserved names), then resolve that path
+# beneath the trusted project root before actual IO. This separates a
+# manifest's portable identity from machine-local absolute filesystem paths.
+#
+# Case-fold uniqueness prevents collisions after deployment to a host with
+# case-insensitive paths. Filesystem symlink checks remain a publish/ingest
+# responsibility: string normalization alone cannot rule out symlink escapes.
 """Portable project-path validation and containment helpers."""
 
 from __future__ import annotations
@@ -18,6 +27,8 @@ _WINDOWS_DEVICE = re.compile(
 _WINDOWS_FORBIDDEN = frozenset('<>"|?*')
 
 
+# Reject absolute/drive/UNC/traversal paths and platform-ambiguous names.
+# Do not silently convert malformed external paths into usable locations.
 def normalize_project_path(value: str) -> str:
     """Validate and normalize a project-relative path.
 
@@ -72,6 +83,8 @@ def casefold_path_key(value: str) -> str:
     return normalize_project_path(value).casefold()
 
 
+# Combine a validated portable path with the designated project root and
+# check containment, rather than trusting authored manifest path strings.
 def resolve_project_path(project_root: Path, value: str) -> Path:
     """Resolve a portable project path and prove it remains inside the root."""
 
