@@ -1,3 +1,16 @@
+# TEACHING MODULE: A publish is a two-phase filesystem operation.
+# plan_publish is nonmutating: it validates portable relative paths,
+# expected fingerprints, immutable target/version rules and destination.
+# publish_bundle stages copies and a canonical manifest in a sibling
+# directory, re-hashes the staged payload, and atomically renames into
+# place. A replacement uses a backup/restore sequence on failure.
+#
+# The source root and output root must remain distinct. A checked
+# fingerprint catches changed bytes, but source changes between plan and
+# stage are also rechecked. Symlink rejection and project containment
+# prevent following arbitrary paths into sensitive host files.
+# This publication cannot guarantee multi-filesystem transaction atomicity
+# or grant copyright rights to the published textures/cache/media.
 """Validated atomic publication of immutable production bundles."""
 
 from __future__ import annotations
@@ -35,6 +48,8 @@ class PublishResult:
     replaced: bool
 
 
+# Determine exactly what will be published without modifying output.
+# All source file hashes must match declared fingerprints *before* staging.
 def plan_publish(
     source_root: Path,
     destination_root: Path,
@@ -87,6 +102,9 @@ def plan_publish(
     )
 
 
+# Copy to an isolated staging directory and reverify every file's bytes.
+# Publish by replacing a single directory entry; on a failed replacement,
+# attempt restoring the prior version using the staged backup path.
 def publish_bundle(
     source_root: Path,
     destination_root: Path,
@@ -163,6 +181,8 @@ def publish_bundle(
 
 
 
+# Reject symlinked or non-regular paths before opening source content.
+# The path's portable spelling is validated by the shared paths module.
 def _require_unlinked_source_file(source_root: Path, portable_path: str) -> Path:
     """Reject symbolic links in every authored source-path component.
 
