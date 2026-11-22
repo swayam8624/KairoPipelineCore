@@ -1,5 +1,7 @@
 # KairoPipelineCore
 
+**Study the implementation:** [linked file-reading order](docs/SOURCE_READING_ORDER.md) · [Cross-DCC source-to-publish-to-consumer validation](docs/CROSS_DCC_PUBLICATION_WALKTHROUGH.md).
+
 `KairoPipelineCore` provides the host-neutral contracts shared by Kairo's
 Blender, Maya, Houdini, and Nuke production tools. It deliberately depends only
 on the Python standard library so it can be packaged into DCC applications
